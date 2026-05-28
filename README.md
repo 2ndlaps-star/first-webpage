@@ -7,6 +7,7 @@ A simple, responsive web page built with HTML, CSS, and a touch of JavaScript.
 - `index.html` — the page structure and content
 - `styles.css` — styling (dark theme, responsive layout)
 - `script.js` — a small interactive button
+- `ARCHITECTURE.md` — the design decisions behind this project and why they were made
 
 ## View it locally
 
