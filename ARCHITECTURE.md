@@ -31,7 +31,6 @@ Browser  ──requests──▶  GitHub Pages  ──serves──▶  index.htm
 | `script.js` | **Behavior** — the interactive button that changes its message on click. | JavaScript adds interactivity. It's separate so the page still loads and reads fine even if scripts are disabled. |
 | `README.md` | **Project intro** — what this is and how to run it. | The first thing a visitor to the GitHub repo reads. |
 | `ARCHITECTURE.md` | **This file** — the design decisions. | Explains the "why" so future-you (or a collaborator) can understand the choices. |
-| `.github/workflows/deploy-pages.yml` | **Automation** — publishes the site to GitHub Pages on every push. | So you never have to deploy by hand. |
 
 ## Key decisions and the reasoning
 
@@ -83,23 +82,21 @@ click-message is an *enhancement* layered on top.
 - **Why:** The site never depends on JS to deliver its core content, so it
   stays robust.
 
-### 6. Hosting on GitHub Pages via GitHub Actions
+### 6. Hosting on GitHub Pages ("deploy from a branch")
 
-The site is published with a GitHub Actions workflow rather than by manually
-uploading files or flipping settings each time.
+The site is published with **GitHub Pages** using the built-in
+**"Deploy from a branch"** option.
 
-- **How it works:** On every push, the workflow (`deploy-pages.yml`) packages
-  the repository's files and deploys them to GitHub Pages. It runs with the
-  minimum permissions needed (`pages: write`, `id-token: write`) and uses
-  `concurrency` so a newer push cancels an in-progress deploy.
+- **How it works:** GitHub Pages is pointed at this repository's branch and the
+  root folder. Whenever you push, GitHub's own built-in publisher rebuilds and
+  serves the static files — no custom build step or workflow to maintain.
 - **Why GitHub Pages:** It's free, requires no separate hosting account, and
   lives right next to the code. Perfect for a static site.
-- **Why Actions (not the "deploy from branch" option):** Automating it in code
-  means the deploy process is version-controlled and visible, and it deploys
-  the moment you push — no clicking through settings.
-- **Note on branch:** The workflow deploys from this repository's **default
-  branch**, which is also where the code lives, so no extra branch-protection
-  configuration is needed.
+- **Why "deploy from a branch" (instead of a custom GitHub Actions workflow):**
+  It's the simplest, most reliable option for a plain static site. There's no
+  workflow file, no access-token permissions to configure, and nothing that can
+  fail silently — GitHub just serves the files directly. (A custom Actions
+  workflow is worth adding later if the site ever needs a build step.)
 
 ## How a change flows to the live site
 
@@ -107,7 +104,7 @@ uploading files or flipping settings each time.
 You edit a file  ──▶  git commit  ──▶  git push
                                           │
                                           ▼
-                            GitHub Actions runs deploy-pages.yml
+                          GitHub Pages rebuilds from the branch
                                           │
                                           ▼
                             Site goes live at the Pages URL
